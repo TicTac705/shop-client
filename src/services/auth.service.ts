@@ -29,9 +29,4 @@ export default {
     }
     return JSON.parse(t);
   },
-
-  // processLoginSuccess(store, token) {
-  //     store.dispatch(types.AUHT_LOGIN, token);
-  //     store.dispatch(types.ALERT_LOAD_LOGIN_ALERT);
-  // }
 };

@@ -1,22 +1,31 @@
-import { ICategory } from "@/models/category.interface";
 import { IProduct } from "@/models/product.interface";
+import { IIdName } from "@/models/id-name.interface";
+import { ICreateUpdate } from "@/models/create-update-delete.interface";
 
-export interface IProductDto {
-  id: number;
-  categories: ICategory[];
+export interface IProductDto extends IIdName, ICreateUpdate {
   description: string;
-  images: string;
   price: number;
-  title: string;
+  unitMeasure: IIdName;
+  store: number;
+  categories: IIdName[];
+  images: string[];
+  creator: IIdName;
+  isActive: boolean;
 }
 
 export function mapToProduct(dto: IProductDto): IProduct {
   return {
     id: dto.id,
-    categories: dto.categories,
+    name: dto.name,
     description: dto.description,
-    images: JSON.parse(dto.images),
     price: dto.price,
-    title: dto.title,
+    unitMeasure: dto.unitMeasure,
+    store: dto.store,
+    categories: dto.categories,
+    images: dto.images,
+    creator: dto.creator,
+    isActive: dto.isActive,
+    createdAt: dto.createdAt,
+    updatedAt: dto.updatedAt,
   };
 }

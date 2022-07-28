@@ -16,39 +16,60 @@
 
     <div class="collapse navbar-collapse" id="navbar">
       <ul class="navbar-nav mr-auto">
-        <li class="nav-item">
-          <router-link class="nav-link" to="/catalog">Catalog</router-link>
-        </li>
-
         <li class="nav-item" v-if="true">
-          <router-link class="nav-link" to="/orders">Catalog</router-link>
+          <router-link class="nav-link" to="/">Catalog</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/cart"
-            >Cart
-            <span class="badge bg-primary rounded-pill" id="cartQuantity"
-              >0</span
-            >
+          <router-link class="nav-link" to="/basket"
+            >Basket
+            <span class="badge bg-primary rounded-pill">{{ countBasket }}</span>
           </router-link>
         </li>
       </ul>
     </div>
-    <div class="d-flex">
-      <button class="btn btn-light" v-on:click="logOut()">Logout</button>
 
-      <router-link v-if="false" class="nav-link" to="/cart">Login</router-link>
-      <router-link v-if="false" class="nav-link" to="/cart"
-        >Sing in</router-link
-      >
+    <div class="d-flex">
+      <user-in-header-component></user-in-header-component>
+      <button class="btn btn-light" v-if="isLogged" v-on:click="logOut()">
+        Logout
+      </button>
+      <router-link v-if="!isLogged" class="nav-link" to="/auth">
+        Login
+      </router-link>
+      <router-link v-if="!isLogged" class="nav-link" to="/auth">
+        Sing in
+      </router-link>
     </div>
   </nav>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
+import authService from "@/services/auth.service";
+import basketService from "@/services/basket.service";
+import UserInHeaderComponent from "@/components/user/user-in-header.component.vue";
 
-@Options({})
-export default class HeaderComponent extends Vue {}
+@Options({
+  components: { UserInHeaderComponent },
+})
+export default class HeaderComponent extends Vue {
+  countBasket = 0;
+  created() {
+    this.countBasket = basketService.basketCount$.value;
+    basketService.basketCount$.subscribe((countBasket) => {
+      this.countBasket = countBasket;
+    });
+  }
+
+  public isLogged(): boolean {
+    return authService.hasToken();
+  }
+
+  public async logOut() {
+    await authService.clear();
+    this.$router.push("auth");
+  }
+}
 </script>
 
 <style scoped></style>

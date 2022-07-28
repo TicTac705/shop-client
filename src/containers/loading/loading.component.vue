@@ -15,9 +15,11 @@
 import { Options, Vue } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 
-@Options({})
+@Options({
+  components: { LoadingComponent },
+})
 export default class LoadingComponent extends Vue {
-  @Prop() public visible = false;
+  @Prop() visible: boolean;
 }
 </script>
 

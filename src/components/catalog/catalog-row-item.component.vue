@@ -22,16 +22,23 @@
     </td>
 
     <td class="productTitle">
-      {{ product.title }}
+      {{ product.name }}
     </td>
+
     <td>
-      <span v-for="cat in product.categories" v-bind:key="cat.code">
-        {{ cat.title }}</span
+      <span v-for="cat in product.categories" v-bind:key="cat.id">
+        {{ cat.name }}</span
       >
     </td>
+
     <td class="productPrice">{{ product.price }} RUB</td>
+
     <td>
-      <button class="btn btn-primary" v-on:click="addToCart($event)">
+      <button
+        type="button"
+        class="btn btn-primary"
+        v-on:click="addToCart($event)"
+      >
         Add to cart
       </button>
     </td>
@@ -48,7 +55,7 @@ export default class CatalogRowItemComponent extends Vue {
   @Prop() public product!: IProduct;
 
   addToCart() {
-    console.log("click addToCart ", this.product.title);
+    this.$emit("addToBasket", this.product.id);
   }
 }
 </script>

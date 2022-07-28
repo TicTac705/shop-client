@@ -1,9 +1,16 @@
 export interface IPaging<T> {
-  items: T[];
+  paginate: Paginate;
+  collection: T[];
 }
 
-export function withPaging<T>(items: T[]): IPaging<T> {
-  return {
-    items,
-  };
+export interface Paginate {
+  lastPage: number;
+  currentPage: number;
+  totalElements: number;
 }
+
+// export function withPaging<T>(items: T[]): IPaging<T> {
+//   return {
+//     items,
+//   };
+// }

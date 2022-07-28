@@ -1,5 +1,7 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { API } from "../config/config.service";
+import authService from "@/services/auth.service";
+import router from "@/router";
 // import * as utils from "@/utils";
 
 export interface IRest {
@@ -8,6 +10,10 @@ export interface IRest {
   post<T>(endpoint: string, body?: any): Promise<T>;
 
   put<T>(endpoint: string, body?: any): Promise<T>;
+}
+
+export interface IResponseErrorCustom {
+  message: string;
 }
 
 export enum ResponseCode {
@@ -33,21 +39,35 @@ const instanse = axios.create({
 instanse.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    const responseError: IResponseError = error.response
-      ?.data as IResponseError;
-
-    if (responseError.errorCode === ResponseCode.ValidationError) {
-      console.info("validation", responseError);
-      return Promise.reject(responseError);
+    if (error.response?.status === 444) {
+      authService.clear();
     }
 
+    if (error.response?.status === 401) {
+      authService.clear();
+      router.push({
+        name: "login",
+        query: { returnUrl: router.currentRoute.value.path },
+      });
+      return Promise.reject(
+        (error.response?.data as IResponseErrorCustom).message as string
+      );
+    }
+
+    // const responseError: IResponseError = error.response
+    //   ?.data as IResponseError;
+    // debugger;
+    // if (responseError.errorCode === ResponseCode.ValidationError) {
+    //   return Promise.reject(responseError);
+    // }
+    //
     // if (responseError.errorCode === ResponseCode.InvalidToken) {
-    //     store.dispatch(types.AUTH_LOGOUT);
-    //     router.push({
-    //         name: 'login'
-    //         // query: { returnUrl: router.currentRoute.path }
-    //     });
-    //     return Promise.reject(responseError);
+    //   authService.clear();
+    //   router.push({
+    //     name: "login",
+    //     query: { returnUrl: router.currentRoute.value.path },
+    //   });
+    //   return Promise.reject(responseError);
     // }
 
     // console.info(responseError);
@@ -66,8 +86,8 @@ instanse.interceptors.response.use(
 );
 
 instanse.interceptors.request.use((config: AxiosRequestConfig) => {
-  //const token = store.state['auth'].token;
-  const token = "test token";
+  const token = authService.getToken();
+
   config.headers = {
     Pragma: "no-cache",
   };

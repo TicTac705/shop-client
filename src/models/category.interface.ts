@@ -1,4 +1,3 @@
-export interface ICategory {
-  code: number;
-  title: string;
-}
+import { IIdName } from "@/models/id-name.interface";
+
+export type ICategory = IIdName;

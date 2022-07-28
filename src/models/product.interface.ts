@@ -1,10 +1,13 @@
-import { ICategory } from "@/models/category.interface";
+import { IIdName } from "@/models/id-name.interface";
+import { ICreateUpdate } from "@/models/create-update-delete.interface";
 
-export interface IProduct {
-  id: number;
-  categories: ICategory[];
+export interface IProduct extends IIdName, ICreateUpdate {
   description: string;
-  images: string[];
   price: number;
-  title: string;
+  unitMeasure: IIdName;
+  store: number;
+  categories: IIdName[];
+  images: string[];
+  creator: IIdName;
+  isActive: boolean;
 }
