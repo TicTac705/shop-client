@@ -6,7 +6,6 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-import HelloWorld from "@/components/HelloWorld.vue";
 import CatalogComponent from "@/components/catalog/catalog.component.vue";
 
 @Options({

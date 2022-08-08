@@ -1,48 +1,40 @@
 <template>
-  <tr id="product">
-    <td>
-      {{ product.id }}
-    </td>
+  <div class="card shadow-sm pt-1" style="width: 18rem" id="{{ product.id }}">
+    <img
+      v-if="product.images.length"
+      :src="product.images[0]['src']"
+      class="card-img-top"
+      alt="{{ product.name }}"
+    />
+    <img
+      v-if="!product.images.length"
+      src="@/assets/no-image.jpg"
+      class="card-img-top"
+      alt="product.name"
+    />
 
-    <td class="productImage">
-      <img
-        v-if="product.images.length"
-        class="mx-auto d-block"
-        :src="product.images[0]"
-        alt="photo"
-        height="50"
-      />
-      <img
-        v-if="!product.images.length"
-        class="mx-auto d-block"
-        src="@/assets/no-image.jpg"
-        alt="photo"
-        height="50pt"
-      />
-    </td>
-
-    <td class="productTitle">
-      {{ product.name }}
-    </td>
-
-    <td>
-      <span v-for="cat in product.categories" v-bind:key="cat.id">
-        {{ cat.name }}</span
-      >
-    </td>
-
-    <td class="productPrice">{{ product.price }} RUB</td>
-
-    <td>
-      <button
-        type="button"
-        class="btn btn-primary"
-        v-on:click="addToCart($event)"
-      >
-        Add to cart
-      </button>
-    </td>
-  </tr>
+    <div class="card-body">
+      <h5 class="card-title">{{ product.name }}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">
+        <span v-for="cat in product.categories" v-bind:key="cat.id">
+          {{ cat.name }}</span
+        >
+      </h6>
+      <p class="card-text">{{ product.description }}</p>
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="btn-group">
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-primary"
+            v-on:click="addToCart($event)"
+          >
+            Add to cart
+          </button>
+        </div>
+        <small class="text-muted"> {{ product.price }} RUB </small>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">

@@ -10,6 +10,7 @@
           placeholder="Login"
           class="form-control"
           @focus="error = ''"
+          required
         />
         <br />
         <input
@@ -18,6 +19,7 @@
           placeholder="Password"
           class="form-control"
           @focus="error = ''"
+          required
         />
         <br />
         <div class="text-center alert alert-danger" v-if="error.length > 0">
@@ -29,8 +31,8 @@
           type="submit"
           class="btn btn-wide btn-primary login-btn"
         >
+          <span v-if="!loading"> Login </span>
           <loading-component :visible="loading"></loading-component>
-          Login
         </button>
 
         <!--        <div class="text-center">-->
@@ -49,7 +51,6 @@ import authApi from "@/api/auth.api";
 import authService from "@/services/auth.service";
 import LoadingComponent from "@/containers/loading/loading.component.vue";
 import { IToken } from "@/models/account/token.interface";
-// import authService from "@/services/auth.service";
 
 @Options({
   components: { LoginPage, LoadingComponent },
@@ -83,7 +84,7 @@ export default class LoginPage extends Vue {
           ? (this.$route.query.returnUrl as string)
           : "/catalog";
 
-        this.$router.push(returnUrl);
+        await this.$router.push(returnUrl);
       })
       .catch((err) => {
         this.loading = false;

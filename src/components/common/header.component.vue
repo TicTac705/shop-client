@@ -20,10 +20,13 @@
           <router-link class="nav-link" to="/">Catalog</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/basket"
-            >Basket
+          <router-link class="nav-link" to="/basket">
+            Basket
             <span class="badge bg-primary rounded-pill">{{ countBasket }}</span>
           </router-link>
+        </li>
+        <li class="nav-item">
+          <router-link class="nav-link" to="/orders">Orders</router-link>
         </li>
       </ul>
     </div>

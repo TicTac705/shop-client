@@ -3,10 +3,11 @@ import HomeView from "../views/HomeView.vue";
 import LoginPage from "@/components/login/login-page.vue";
 import CatalogComponent from "@/components/catalog/catalog.component.vue";
 import BasketComponent from "@/components/basket/basket.component.vue";
+import OrderListComponent from "@/components/order/order-list.component.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: "/auth",
+    path: "/auth/",
     name: "login",
     component: LoginPage,
   },
@@ -16,17 +17,22 @@ const routes: Array<RouteRecordRaw> = [
     component: HomeView,
   },
   {
-    path: "/catalog",
+    path: "/catalog/",
     name: "catalog",
     component: CatalogComponent,
   },
   {
-    path: "/basket",
+    path: "/basket/",
     name: "basket",
     component: BasketComponent,
   },
   {
-    path: "/about",
+    path: "/orders/",
+    name: "orders",
+    component: OrderListComponent,
+  },
+  {
+    path: "/about/",
     name: "about",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route

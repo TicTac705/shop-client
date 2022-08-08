@@ -1,14 +1,10 @@
 <template>
   <tr id="product">
-    <td>
-      {{ basketItem.product.id }}
-    </td>
-
     <td class="productImage">
       <img
         v-if="basketItem.product.images.length"
         class="mx-auto d-block"
-        :src="product.images[0]"
+        :src="basketItem.product.images[0]['src']"
         alt="photo"
         height="50"
       />
@@ -64,9 +60,6 @@
 import { Options, Vue } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 import { IBasketItem } from "@/models/basket.interface";
-import HeaderComponent from "@/components/common/header.component.vue";
-import LoadingComponent from "@/containers/loading/loading.component.vue";
-import BasketComponent from "@/components/basket/basket.component.vue";
 
 @Options({
   components: {

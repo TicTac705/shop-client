@@ -2,30 +2,46 @@
   <header-component></header-component>
 
   <loading-component :visible="loading"></loading-component>
+  <div
+    class="alert alert-secondary m-5"
+    role="alert"
+    v-if="basketItems.length < 1"
+  >
+    Your basket is empty
+  </div>
 
-  <div class="mx-2" v-if="!loading">
-    <table class="table table-bordered table-hover">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Image</th>
-          <th scope="col">Name</th>
-          <th scope="col">Count</th>
-          <th scope="col">Price</th>
-          <th scope="col">Sum</th>
-        </tr>
-      </thead>
-      <tbody>
-        <basket-row-item-component
-          v-for="item in basketItems"
-          v-bind:basket-item="item"
-          :key="item.id"
-          @deleteItem="onItemDelete(item)"
-          @incItem="incItem(item)"
-          @decItem="decItem(item)"
-        ></basket-row-item-component>
-      </tbody>
-    </table>
+  <div class="container-fluid" v-if="!loading">
+    <div class="row" v-if="basketItems.length > 0">
+      <div class="col-9">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th scope="col">Image</th>
+              <th scope="col">Name</th>
+              <th scope="col">Count</th>
+              <th scope="col">Price</th>
+              <th scope="col">Sum</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <basket-row-item-component
+              v-for="item in basketItems"
+              v-bind:basket-item="item"
+              :key="item.id"
+              @deleteItem="onItemDelete(item)"
+              @incItem="incItem(item)"
+              @decItem="decItem(item)"
+            ></basket-row-item-component>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-3 p-1">
+        <order-creation-form-component
+          :basket="basket"
+        ></order-creation-form-component>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -39,6 +55,7 @@ import basketApi from "@/api/basket.api";
 import basketService from "@/services/basket.service";
 import BasketRowItemComponent from "@/components/basket/basket-row-item.component.vue";
 import LoadingComponent from "@/containers/loading/loading.component.vue";
+import OrderCreationFormComponent from "@/components/order/order-creation-form.component.vue";
 
 @Options({
   components: {
@@ -46,6 +63,7 @@ import LoadingComponent from "@/containers/loading/loading.component.vue";
     HeaderComponent,
     BasketRowItemComponent,
     LoadingComponent,
+    OrderCreationFormComponent,
   },
 })
 export default class BasketComponent extends Vue {
@@ -63,17 +81,9 @@ export default class BasketComponent extends Vue {
     basketService.basketItems$.subscribe((basketItems) => {
       this.basketItems = basketItems;
     });
-  }
 
-  public async load() {
-    this.loading = true;
-
-    try {
+    if (!basketService.isInitialize$.value) {
       await basketService.updateBasket();
-      // this.basket = await basketApi.getBasket();
-      // this.basketItems = this.basket.items;
-    } finally {
-      this.loading = false;
     }
   }
 
@@ -97,7 +107,7 @@ export default class BasketComponent extends Vue {
   async _changeQuantity(product_id: number, count: number) {
     if (count === 0) {
       await basketApi.delete(product_id).then(async () => {
-        this.load();
+        await basketService.updateBasket();
       });
       return;
     }

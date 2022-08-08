@@ -2,27 +2,15 @@
   <header-component></header-component>
   <loading-component :visible="loading"></loading-component>
 
-  <div class="mx-2" v-if="!loading">
-    <table class="table table-bordered table-hover">
-      <thead>
-        <tr>
-          <th scope="col">ID</th>
-          <th scope="col">Image</th>
-          <th scope="col">Name</th>
-          <th scope="col">Categories</th>
-          <th scope="col">Price</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <catalog-row-item-component
-          v-for="product in items"
-          v-bind:product="product"
-          :key="product.id"
-          @addToBasket="addToBasket"
-        ></catalog-row-item-component>
-      </tbody>
-    </table>
+  <div class="container-fluid mt-1" v-if="!loading">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+      <catalog-row-item-component
+        v-for="product in items"
+        v-bind:product="product"
+        :key="product.id"
+        @addToBasket="addToBasket"
+      ></catalog-row-item-component>
+    </div>
   </div>
 </template>
 
