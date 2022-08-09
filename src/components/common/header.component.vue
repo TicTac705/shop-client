@@ -33,9 +33,6 @@
 
     <div class="d-flex">
       <user-in-header-component></user-in-header-component>
-      <button class="btn btn-light" v-if="isLogged" v-on:click="logOut()">
-        Logout
-      </button>
       <router-link v-if="!isLogged" class="nav-link" to="/auth">
         Login
       </router-link>
@@ -66,11 +63,6 @@ export default class HeaderComponent extends Vue {
 
   public isLogged(): boolean {
     return authService.hasToken();
-  }
-
-  public async logOut() {
-    await authService.clear();
-    this.$router.push("auth");
   }
 }
 </script>

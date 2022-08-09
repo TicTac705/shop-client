@@ -1,6 +1,9 @@
 <template>
   <header-component></header-component>
-  <loading-component :visible="loading"></loading-component>
+
+  <div class="mt-5" v-if="loading">
+    <loading-component :visible="loading"></loading-component>
+  </div>
 
   <div class="container-fluid mt-1" v-if="!loading">
     <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">

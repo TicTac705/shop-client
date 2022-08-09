@@ -21,17 +21,27 @@
         >
       </h6>
       <p class="card-text">{{ product.description }}</p>
-      <div class="d-flex justify-content-between align-items-center">
+      <div
+        class="d-flex justify-content-between align-items-center"
+        v-if="product.store > 0"
+      >
         <div class="btn-group">
           <button
             type="button"
             class="btn btn-sm btn-outline-primary"
+            :class="{ disabled: product.store < 1 }"
             v-on:click="addToCart($event)"
           >
             Add to cart
           </button>
         </div>
         <small class="text-muted"> {{ product.price }} RUB </small>
+      </div>
+      <div
+        class="d-flex justify-content-center align-items-center"
+        v-if="product.store < 1"
+      >
+        <span class="text-info">Not available</span>
       </div>
     </div>
   </div>
