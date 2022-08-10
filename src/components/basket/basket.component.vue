@@ -26,9 +26,9 @@
           </thead>
           <tbody>
             <basket-row-item-component
-              v-for="item in basketItems"
+              v-for="(item, index) in basketItems"
               v-bind:basket-item="item"
-              :key="item.id"
+              :key="index"
               @deleteItem="onItemDelete(item)"
               @incItem="incItem(item)"
               @decItem="decItem(item)"

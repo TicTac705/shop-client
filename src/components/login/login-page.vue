@@ -79,6 +79,7 @@ export default class LoginPage extends Vue {
         this.error = "";
 
         await authService.storeToken(res.access_token);
+        await authService.storeTokenData();
 
         const returnUrl: string = this.$route.query.returnUrl
           ? (this.$route.query.returnUrl as string)

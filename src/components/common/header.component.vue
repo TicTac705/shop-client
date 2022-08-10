@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand navbar-dark bg-dark p-2">
     <a class="navbar-brand p-0" href="/">
-      <img src="../../assets/logo.png" alt="logo" width="48" height="48" />
+      <img src="@/assets/store.png" alt="logo" width="48" height="48" />
     </a>
 
     <button
@@ -19,19 +19,22 @@
         <li class="nav-item" v-if="true">
           <router-link class="nav-link" to="/">Catalog</router-link>
         </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/basket">
-            Basket
-            <span class="badge bg-primary rounded-pill">{{ countBasket }}</span>
-          </router-link>
-        </li>
-        <li class="nav-item">
-          <router-link class="nav-link" to="/orders">Orders</router-link>
-        </li>
       </ul>
     </div>
 
     <div class="d-flex">
+      <div>
+        <router-link class="nav-link" to="/basket">
+          <img
+            src="@/assets/basket.svg"
+            alt="basket"
+            width="30"
+            height="30"
+            class="mx-1"
+          />
+          <span class="badge bg-primary rounded-pill">{{ countBasket }}</span>
+        </router-link>
+      </div>
       <user-in-header-component></user-in-header-component>
       <router-link v-if="!isLogged" class="nav-link" to="/auth">
         Login

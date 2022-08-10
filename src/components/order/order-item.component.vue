@@ -28,7 +28,14 @@
         <div class="">
           <ul class="list-group list-group-flush">
             <li class="list-group-item align-self-end">
-              <button type="button" class="btn btn-warning">Recall</button>
+              <button
+                type="button"
+                class="btn btn-warning"
+                :class="{ disabled: !canRecallOrder() }"
+                @click="recallOrder($event)"
+              >
+                Recall
+              </button>
             </li>
             <li class="list-group-item">
               <b>Customer:</b> {{ order.userName }} | {{ order.userEmail }}
@@ -65,9 +72,13 @@
                 <th scope="row">{{ key + 1 }}</th>
                 <td>{{ item.product.name }}</td>
                 <td>{{ item.count }}</td>
-                <td>{{ item.price }}</td>
+                <td>{{ item.price }} ₽</td>
+                <td>{{ item.price * item.count }} ₽</td>
+              </tr>
+              <tr>
+                <td colspan="4" class="align-right"><b>Total:</b></td>
                 <td>
-                  {{ item.price * item.count }}
+                  <b>{{ orderTotalSum }} ₽</b>
                 </td>
               </tr>
             </tbody>
@@ -80,20 +91,31 @@
 
 <script lang="ts">
 import { Vue } from "vue-class-component";
-import { IOrder } from "@/models/order/order.interface";
+import { IOrder, IOrderItem } from "@/models/order/order.interface";
 import { OrderDeliveryStatusesEnum } from "@/models/order/orderDeliveryStatuses.enum";
 import {
   getColorOrderStatus,
+  OrderStatusesEnum,
   translateOrderStatuses,
 } from "@/models/order/orderStatuses.enum";
 import { translateDelivery } from "@/models/order/orderDeliveryStatuses.enum";
-import { translatePaymentStatus } from "@/models/order/order-payment-statuses.enum";
+import {
+  OrderPaymentStatusesEnum,
+  translatePaymentStatus,
+} from "@/models/order/order-payment-statuses.enum";
 import { Prop } from "vue-property-decorator";
+import orderService from "@/services/order.service";
+import userService from "@/services/user.service";
 
 export default class OrderItemComponent extends Vue {
   @Prop() public order: IOrder;
   @Prop() public index: number;
   public deliveryStatuses = OrderDeliveryStatusesEnum;
+  public orderTotalSum: number;
+
+  created() {
+    this.orderTotalSum = this.calculateOrderTotalSum(this.order.items);
+  }
 
   getTranslateOrderStatus($status: number): string {
     return translateOrderStatuses($status);
@@ -109,6 +131,38 @@ export default class OrderItemComponent extends Vue {
 
   getTranslatePaymentStatus($status: number): string {
     return translatePaymentStatus($status);
+  }
+
+  calculateOrderTotalSum(items: IOrderItem[]): number {
+    let sum = 0;
+    items.forEach((value) => {
+      sum += value.price * value.count;
+    });
+
+    return sum;
+  }
+
+  public recallOrder() {
+    this.$emit("recallOrder", this.order);
+  }
+
+  canRecallOrder(): boolean {
+    if (orderService.isCreator(this.order.userId) || userService.isManager()) {
+      if (this.order.orderStatusId === OrderStatusesEnum.CANCELED) {
+        return false;
+      }
+
+      if (
+        this.order.orderStatusId !== OrderStatusesEnum.PROCESSING &&
+        this.order.orderStatusId !== OrderStatusesEnum.ASSEMBLY
+      ) {
+        return false;
+      }
+
+      return this.order.paymentStatusId === OrderPaymentStatusesEnum.NOT_PAID;
+    }
+
+    return false;
   }
 }
 </script>

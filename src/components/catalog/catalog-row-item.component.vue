@@ -4,23 +4,28 @@
       v-if="product.images.length"
       :src="product.images[0]['src']"
       class="card-img-top"
-      alt="{{ product.name }}"
+      :alt="product.name"
     />
     <img
       v-if="!product.images.length"
       src="@/assets/no-image.jpg"
       class="card-img-top"
-      alt="product.name"
+      :alt="product.name"
     />
 
     <div class="card-body">
       <h5 class="card-title">{{ product.name }}</h5>
-      <h6 class="card-subtitle mb-2 text-muted">
-        <span v-for="cat in product.categories" v-bind:key="cat.id">
-          {{ cat.name }}</span
+      <ul class="list-group-horizontal-lg justify-content-center small">
+        <li
+          v-for="category in product.categories"
+          :key="category.id"
+          class="list-group-item m-0 font-monospace"
         >
-      </h6>
-      <p class="card-text">{{ product.description }}</p>
+          {{ category.name }}
+        </li>
+      </ul>
+      <hr />
+      <!--      <p class="card-text">{{ product.description }}</p>-->
       <div
         class="d-flex justify-content-between align-items-center"
         v-if="product.store > 0"
@@ -35,7 +40,7 @@
             Add to cart
           </button>
         </div>
-        <small class="text-muted"> {{ product.price }} RUB </small>
+        <small class="text-muted"> {{ product.price }} ₽ </small>
       </div>
       <div
         class="d-flex justify-content-center align-items-center"

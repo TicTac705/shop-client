@@ -6,7 +6,9 @@
   </div>
 
   <div class="container-fluid mt-1" v-if="!loading">
-    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+    <div
+      class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 justify-content-center"
+    >
       <catalog-row-item-component
         v-for="product in items"
         v-bind:product="product"

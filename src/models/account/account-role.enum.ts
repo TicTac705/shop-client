@@ -1,6 +1,7 @@
 export enum AccountRole {
-  Admin = 10,
-  User = 20,
+  Admin = "admin",
+  Manager = "manager",
+  User = "user",
 }
 
 export function translateAccountRole(role: AccountRole): string {
@@ -9,7 +10,9 @@ export function translateAccountRole(role: AccountRole): string {
       return "Admin";
     case AccountRole.User:
       return "User";
+    case AccountRole.Manager:
+      return "Manager";
     default:
-      return "role";
+      return "Unknown role";
   }
 }

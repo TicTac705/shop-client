@@ -1,8 +1,11 @@
 <template>
-  <div class="d-flex mx-3 justify-content-center text-info flex-column">
+  <div class="d-flex justify-content-center text-info flex-column">
     <loading-component :visible="loading"></loading-component>
   </div>
-  <div class="dropdown text-end dropstart" v-if="!loading">
+  <div
+    class="dropdown text-end dropstart"
+    v-if="!loading && profileModel !== null"
+  >
     <a
       href="#"
       class="d-block link-dark text-decoration-none dropdown-toggle"
@@ -35,6 +38,9 @@
       </li>
       <li><hr class="dropdown-divider" /></li>
       <li>
+        <router-link class="dropdown-item" to="/orders">Orders</router-link>
+      </li>
+      <li>
         <a class="dropdown-item" href="#" v-if="isLogged" v-on:click="logOut()">
           Sign out
         </a>
@@ -47,7 +53,6 @@
 import { Options, Vue } from "vue-class-component";
 import authService from "@/services/auth.service";
 
-import profileApi from "@/api/profile.api";
 import { IProfileModel } from "@/models/account/auth-model.interface";
 import LoadingComponent from "@/containers/loading/loading.component.vue";
 
@@ -55,12 +60,22 @@ import LoadingComponent from "@/containers/loading/loading.component.vue";
   components: { UserInHeaderComponent, LoadingComponent },
 })
 export default class UserInHeaderComponent extends Vue {
-  public profileModel: IProfileModel;
+  public profileModel: IProfileModel | null = null;
 
   public loading = false;
 
-  created() {
-    this.isLogged() && this.load();
+  async created() {
+    if (!this.isLogged()) {
+      return;
+    }
+
+    authService.profileModel$.subscribe((profileModel) => {
+      this.profileModel = profileModel;
+    });
+
+    if (!authService.isInitialize$.value) {
+      await authService.getProfile();
+    }
   }
 
   public isLogged(): boolean {
@@ -69,20 +84,8 @@ export default class UserInHeaderComponent extends Vue {
 
   public async logOut() {
     await authService.clear();
-    this.$router.push("auth");
-  }
-
-  public async load() {
-    if (this.loading) {
-      return;
-    }
-    this.loading = true;
-
-    try {
-      this.profileModel = await profileApi.getUserProfile();
-    } finally {
-      this.loading = false;
-    }
+    authService.isInitialize$.next(false);
+    await this.$router.push("auth");
   }
 }
 </script>

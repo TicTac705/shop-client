@@ -9,4 +9,7 @@ export default {
   getList(): Promise<IOrder[]> {
     return http.get(`profile/orders`);
   },
+  recall(id: string) {
+    return http.put("profile/orders/" + id + "/recall");
+  },
 };

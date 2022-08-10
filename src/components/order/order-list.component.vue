@@ -23,6 +23,7 @@
       v-bind:order="order"
       v-bind:index="index"
       :key="order.id"
+      @recallOrder="recallOrder(order)"
     ></order-item-component>
   </div>
 </template>
@@ -69,6 +70,11 @@ export default class OrderListComponent extends Vue {
     } finally {
       this.loading = false;
     }
+  }
+
+  recallOrder($event: any) {
+    orderApi.recall($event.id);
+    this.load();
   }
 }
 </script>

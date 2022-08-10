@@ -1,9 +1,9 @@
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, ReplaySubject } from "rxjs";
 import { IBasket, IBasketItem } from "@/models/basket.interface";
 import basketApi from "@/api/basket.api";
 
 export default {
-  basket$: new Subject<IBasket>(),
+  basket$: new ReplaySubject<IBasket>(),
   basketCount$: new BehaviorSubject<number>(0),
   basketItems$: new BehaviorSubject<IBasketItem[]>([]),
   isInitialize$: new BehaviorSubject<boolean>(false),
