@@ -72,8 +72,8 @@
                 <th scope="row">{{ key + 1 }}</th>
                 <td>{{ item.product.name }}</td>
                 <td>{{ item.count }}</td>
-                <td>{{ item.price }} ₽</td>
-                <td>{{ item.price * item.count }} ₽</td>
+                <td>{{ toMoneyFormat(item.price) }} ₽</td>
+                <td>{{ toMoneyFormat(item.price * item.count) }} ₽</td>
               </tr>
               <tr>
                 <td colspan="4" class="align-right"><b>Total:</b></td>
@@ -91,6 +91,7 @@
 
 <script lang="ts">
 import { Vue } from "vue-class-component";
+import { Prop } from "vue-property-decorator";
 import { IOrder, IOrderItem } from "@/models/order/order.interface";
 import { OrderDeliveryStatusesEnum } from "@/models/order/orderDeliveryStatuses.enum";
 import {
@@ -103,15 +104,15 @@ import {
   OrderPaymentStatusesEnum,
   translatePaymentStatus,
 } from "@/models/order/order-payment-statuses.enum";
-import { Prop } from "vue-property-decorator";
 import orderService from "@/services/order.service";
 import userService from "@/services/user.service";
+import NumberMapper from "@/components/mappers/number.mapper";
 
 export default class OrderItemComponent extends Vue {
   @Prop() public order: IOrder;
   @Prop() public index: number;
   public deliveryStatuses = OrderDeliveryStatusesEnum;
-  public orderTotalSum: number;
+  public orderTotalSum: string;
 
   created() {
     this.orderTotalSum = this.calculateOrderTotalSum(this.order.items);
@@ -133,13 +134,17 @@ export default class OrderItemComponent extends Vue {
     return translatePaymentStatus($status);
   }
 
-  calculateOrderTotalSum(items: IOrderItem[]): number {
+  calculateOrderTotalSum(items: IOrderItem[]): string {
     let sum = 0;
     items.forEach((value) => {
       sum += value.price * value.count;
     });
 
-    return sum;
+    return this.toMoneyFormat(sum);
+  }
+
+  public toMoneyFormat(number: number): string {
+    return NumberMapper.toMoneyFormat(number);
   }
 
   public recallOrder() {

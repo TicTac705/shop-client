@@ -1,4 +1,61 @@
 <template>
+  <tr id="product">
+    <td class="productImage">
+      <img
+        v-if="basketItem.product.images.length"
+        class="mx-auto d-block"
+        :src="basketItem.product.images[0]['src']"
+        alt="photo"
+        height="50"
+      />
+      <img
+        v-if="!basketItem.product.images.length"
+        class="mx-auto d-block"
+        src="@/assets/no-image.jpg"
+        alt="photo"
+        height="50"
+      />
+    </td>
+
+    <td class="productTitle">
+      {{ basketItem.product.name }}
+    </td>
+
+    <td>
+      {{ basketItem.count }}
+    </td>
+
+    <td class="productPrice">
+      {{ toMoneyFormat(basketItem.product.price) }} ₽
+    </td>
+
+    <td>{{ toMoneyFormat(basketItem.count * basketItem.product.price) }} ₽</td>
+    <td>
+      <div class="w-100 d-flex gap-1 justify-content-center">
+        <button
+          type="button"
+          class="btn btn-primary"
+          v-on:click="deleteItem($event)"
+        >
+          Delete
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          v-on:click="incItem($event)"
+        >
+          +
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          v-on:click="decItem($event)"
+        >
+          -
+        </button>
+      </div>
+    </td>
+  </tr>
   <div class="card shadow-sm pt-1" style="width: 18rem" id="{{ product.id }}">
     <img
       v-if="product.images.length"
@@ -30,16 +87,6 @@
         class="d-flex justify-content-between align-items-center"
         v-if="product.store > 0"
       >
-        <div class="btn-group">
-          <button
-            type="button"
-            class="btn btn-sm btn-outline-primary"
-            :class="{ disabled: product.store < 1 }"
-            v-on:click="addToCart($event)"
-          >
-            Add to cart
-          </button>
-        </div>
         <small class="text-muted"> {{ toMoneyFormat(product.price) }} ₽ </small>
       </div>
       <div
@@ -60,12 +107,8 @@ import { IProduct } from "@/models/product.interface";
 import NumberMapper from "@/components/mappers/number.mapper";
 
 @Options({})
-export default class CatalogRowItemComponent extends Vue {
+export default class ManagementCatalogRowItemComponent extends Vue {
   @Prop() public product!: IProduct;
-
-  addToCart() {
-    this.$emit("addToBasket", this.product.id);
-  }
 
   public toMoneyFormat(number: number): string {
     return NumberMapper.toMoneyFormat(number);

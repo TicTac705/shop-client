@@ -1,7 +1,6 @@
 <template>
-  <header-component></header-component>
-
   <loading-component :visible="loading"></loading-component>
+
   <div
     class="alert alert-secondary m-5"
     role="alert"
@@ -40,6 +39,10 @@
         <order-creation-form-component
           :basket="basket"
         ></order-creation-form-component>
+
+        <div class="alert alert-info mt-2" role="alert">
+          <span class="fw-bold">Total:</span> {{ totalPrice }} ₽
+        </div>
       </div>
     </div>
   </div>
@@ -48,11 +51,10 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 
-import HeaderComponent from "@/components/common/header.component.vue";
-
 import { IBasket, IBasketItem } from "@/models/basket.interface";
 import basketApi from "@/api/basket.api";
 import basketService from "@/services/basket.service";
+import NumberMapper from "@/components/mappers/number.mapper";
 import BasketRowItemComponent from "@/components/basket/basket-row-item.component.vue";
 import LoadingComponent from "@/containers/loading/loading.component.vue";
 import OrderCreationFormComponent from "@/components/order/order-creation-form.component.vue";
@@ -60,7 +62,6 @@ import OrderCreationFormComponent from "@/components/order/order-creation-form.c
 @Options({
   components: {
     BasketComponent,
-    HeaderComponent,
     BasketRowItemComponent,
     LoadingComponent,
     OrderCreationFormComponent,
@@ -70,6 +71,8 @@ export default class BasketComponent extends Vue {
   public basket: IBasket;
 
   public basketItems: IBasketItem[] = [];
+
+  public totalPrice = "0";
 
   public loading = false;
 
@@ -85,12 +88,15 @@ export default class BasketComponent extends Vue {
     if (!basketService.isInitialize$.value) {
       await basketService.updateBasket();
     }
+
+    this.totalPrice = this.calculateTotalPrice();
   }
 
   async onItemDelete($event: any) {
     await basketApi.delete($event.product.id).then(async () => {
       this.basket = await basketApi.getBasket();
       this.basketItems = this.basket.items;
+      this.totalPrice = this.calculateTotalPrice();
     });
   }
 
@@ -117,12 +123,22 @@ export default class BasketComponent extends Vue {
       .then(async () => {
         this.basket = await basketApi.getBasket();
         this.basketItems = this.basket.items;
+        this.totalPrice = this.calculateTotalPrice();
       });
+  }
+
+  public calculateTotalPrice(): string {
+    let result = 0;
+
+    this.basketItems.forEach((value) => {
+      result += value.product.price * value.count;
+    });
+
+    return NumberMapper.toMoneyFormat(result);
   }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 h3 {
   margin: 40px 0 0;

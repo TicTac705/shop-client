@@ -4,7 +4,7 @@
   </div>
   <div
     class="dropdown text-end dropstart"
-    v-if="!loading && profileModel !== null"
+    v-if="isLogged && !loading && profileModel !== null"
   >
     <a
       href="#"
@@ -36,21 +36,21 @@
           {{ profileModel.email }}
         </a>
       </li>
-      <li v-if="isManager()"><hr class="dropdown-divider" /></li>
-      <li v-if="isManager()">
-        <a class="dropdown-item" href="#">Product management</a>
-      </li>
-      <li v-if="isManager()">
-        <a class="dropdown-item" href="#">Order management</a>
-      </li>
+      <template v-if="isManager()">
+        <li><hr class="dropdown-divider" /></li>
+        <li>
+          <a class="dropdown-item" href="#">Product management</a>
+        </li>
+        <li>
+          <a class="dropdown-item" href="#">Order management</a>
+        </li>
+      </template>
       <li><hr class="dropdown-divider" /></li>
       <li>
         <router-link class="dropdown-item" to="/orders">Orders</router-link>
       </li>
       <li>
-        <a class="dropdown-item" href="#" v-if="isLogged" v-on:click="logOut()">
-          Sign out
-        </a>
+        <a class="dropdown-item" href="#" v-on:click="logOut()"> Sign out </a>
       </li>
     </ul>
   </div>

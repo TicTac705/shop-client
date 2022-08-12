@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar navbar-expand navbar-dark bg-dark p-2">
+  <nav class="navbar navbar-expand navbar-dark bg-dark p-2 fixed-top">
     <a class="navbar-brand p-0" href="/">
       <img src="@/assets/store.png" alt="logo" width="48" height="48" />
     </a>
@@ -17,7 +17,9 @@
     <div class="collapse navbar-collapse" id="navbar">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item" v-if="true">
-          <router-link class="nav-link" to="/">Catalog</router-link>
+          <router-link class="nav-link" :to="{ name: 'catalog' }">
+            Catalog
+          </router-link>
         </li>
       </ul>
     </div>
@@ -57,11 +59,15 @@ import UserInHeaderComponent from "@/components/user/user-in-header.component.vu
 })
 export default class HeaderComponent extends Vue {
   countBasket = 0;
-  created() {
+  async created() {
     this.countBasket = basketService.basketCount$.value;
     basketService.basketCount$.subscribe((countBasket) => {
       this.countBasket = countBasket;
     });
+
+    if (!basketService.isInitialize$.value) {
+      await basketService.updateBasket();
+    }
   }
 
   public isLogged(): boolean {

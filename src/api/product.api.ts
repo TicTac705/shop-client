@@ -7,4 +7,8 @@ export default {
   getPage(page = 1): Promise<IPaging<IProductDto>> {
     return http.get(`/?page=` + page);
   },
+
+  getPageForManagement(page = 1): Promise<IPaging<IProductDto>> {
+    return http.get(`profile/catalog-management/products/?page=` + page);
+  },
 };

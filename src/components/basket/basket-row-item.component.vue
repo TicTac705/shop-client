@@ -25,9 +25,11 @@
       {{ basketItem.count }}
     </td>
 
-    <td class="productPrice">{{ basketItem.product.price }} RUB</td>
+    <td class="productPrice">
+      {{ toMoneyFormat(basketItem.product.price) }} ₽
+    </td>
 
-    <td>{{ basketItem.count * basketItem.product.price }} RUB</td>
+    <td>{{ toMoneyFormat(basketItem.count * basketItem.product.price) }} ₽</td>
     <td>
       <div class="w-100 d-flex gap-1 justify-content-center">
         <button
@@ -60,6 +62,7 @@
 import { Options, Vue } from "vue-class-component";
 import { Prop } from "vue-property-decorator";
 import { IBasketItem } from "@/models/basket.interface";
+import NumberMapper from "@/components/mappers/number.mapper";
 
 @Options({
   components: {
@@ -81,6 +84,10 @@ export default class BasketRowItemComponent extends Vue {
 
   public decItem() {
     this.$emit("decItem", this.basketItem);
+  }
+
+  public toMoneyFormat(number: number): string {
+    return NumberMapper.toMoneyFormat(number);
   }
 }
 </script>

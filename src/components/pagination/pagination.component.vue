@@ -1,15 +1,17 @@
 <template>
-  <nav v-if="paginate.lastPage > 1">
+  <nav v-if="paginate.lastPage > 1 && !loading">
     <ul class="pagination justify-content-center">
       <li class="page-item" :class="{ disabled: paginate.currentPage === 1 }">
-        <a
+        <router-link
           class="page-link"
-          href="#"
           aria-label="Previous"
-          @click="getList(paginate.currentPage - 1)"
+          :to="{
+            name: 'catalogPagination',
+            params: { number: paginate.currentPage - 1 },
+          }"
         >
           <span aria-hidden="true">&laquo; Previous</span>
-        </a>
+        </router-link>
       </li>
       <li class="page-item disabled">
         <a href="#" class="page-link">
@@ -20,14 +22,16 @@
         class="page-item"
         :class="{ disabled: paginate.currentPage === paginate.lastPage }"
       >
-        <a
+        <router-link
           class="page-link"
-          href="#"
           aria-label="Next"
-          @click="getList(paginate.currentPage + 1)"
+          :to="{
+            name: 'catalogPagination',
+            params: { number: paginate.currentPage + 1 },
+          }"
         >
           <span aria-hidden="true">Next &raquo;</span>
-        </a>
+        </router-link>
       </li>
     </ul>
   </nav>
@@ -40,11 +44,12 @@ import { Prop } from "vue-property-decorator";
 
 export default class PaginationComponent extends Vue {
   @Prop() public paginate: Paginate;
-
-  getList(pageNumber: number) {
-    this.$emit("getList", pageNumber);
-  }
+  @Prop() public loading: boolean;
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+nav {
+  padding-bottom: 0;
+}
+</style>

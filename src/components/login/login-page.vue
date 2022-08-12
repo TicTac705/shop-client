@@ -80,7 +80,7 @@ export default class LoginPage extends Vue {
 
         const returnUrl: string = this.$route.query.returnUrl
           ? (this.$route.query.returnUrl as string)
-          : "/catalog";
+          : "/";
 
         await this.$router.push(returnUrl);
       })

@@ -7,12 +7,24 @@
     <div
       class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 justify-content-center"
     >
-      <catalog-row-item-component
-        v-for="product in items"
-        v-bind:product="product"
-        :key="product.id"
-        @addToBasket="addToBasket"
-      ></catalog-row-item-component>
+      <table class="table table-bordered table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Image</th>
+            <th scope="col">Name</th>
+            <th scope="col">Store</th>
+            <th scope="col">Price</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <management-catalog-row-item-component
+            v-for="product in items"
+            v-bind:product="product"
+            :key="product.id"
+          ></management-catalog-row-item-component>
+        </tbody>
+      </table>
     </div>
   </div>
 
@@ -24,27 +36,24 @@
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
-
 import { IProduct } from "@/models/product.interface";
 import { IPaging, Paginate } from "@/models/paging.interface";
 import { IProductDto, mapToProduct } from "@/dto/product.dto";
 
-import CatalogRowItemComponent from "@/components/catalog/catalog-row-item.component.vue";
+import ManagementCatalogRowItemComponent from "@/components/management/catalog/management-catalog-row-item.component.vue";
 import LoadingComponent from "@/containers/loading/loading.component.vue";
 import PaginationComponent from "@/components/pagination/pagination.component.vue";
 
 import productApi from "@/api/product.api";
-import basketApi from "@/api/basket.api";
-import basketService from "@/services/basket.service";
 
 @Options({
   components: {
-    CatalogRowItemComponent,
+    ManagementCatalogRowItemComponent,
     LoadingComponent,
     PaginationComponent,
   },
 })
-export default class CatalogComponent extends Vue {
+export default class ManagementCatalogComponent extends Vue {
   public items: IProduct[] = [];
   public paginate: Paginate = {
     lastPage: 0,
@@ -65,7 +74,7 @@ export default class CatalogComponent extends Vue {
   }
 
   list(page = 1): Promise<IPaging<IProductDto>> {
-    return productApi.getPage(page);
+    return productApi.getPageForManagement(page);
   }
 
   public async load() {
@@ -92,30 +101,7 @@ export default class CatalogComponent extends Vue {
       this.loading = false;
     }
   }
-
-  async addToBasket(id: number) {
-    await basketApi.addItem(id);
-    await basketService.updateBasket();
-  }
 }
 </script>
 
-<style lang="scss" scoped>
-h3 {
-  margin: 40px 0 0;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-
-a {
-  color: #42b983;
-}
-</style>
+<style lang="scss" scoped></style>
