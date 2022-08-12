@@ -22,7 +22,7 @@
         alt="avatar"
         width="40"
         height="40"
-        class="rounded-circle"
+        class="rounded-circle border border-warning"
       />
     </a>
     <ul class="dropdown-menu text-small" aria-labelledby="dropdownUser1">
@@ -35,6 +35,13 @@
         <a class="dropdown-item disabled text-dark" href="#">
           {{ profileModel.email }}
         </a>
+      </li>
+      <li v-if="isManager()"><hr class="dropdown-divider" /></li>
+      <li v-if="isManager()">
+        <a class="dropdown-item" href="#">Product management</a>
+      </li>
+      <li v-if="isManager()">
+        <a class="dropdown-item" href="#">Order management</a>
       </li>
       <li><hr class="dropdown-divider" /></li>
       <li>
@@ -52,6 +59,7 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import authService from "@/services/auth.service";
+import userService from "@/services/user.service";
 
 import { IProfileModel } from "@/models/account/auth-model.interface";
 import LoadingComponent from "@/containers/loading/loading.component.vue";
@@ -80,6 +88,10 @@ export default class UserInHeaderComponent extends Vue {
 
   public isLogged(): boolean {
     return authService.hasToken();
+  }
+
+  public isManager(): boolean {
+    return userService.isManager();
   }
 
   public async logOut() {

@@ -1,12 +1,21 @@
 <template>
   <div class="root">
-    <div class="app-logo-container">Authorization</div>
+    <div class="app-logo-container">Registration</div>
     <div class="login-page">
       <form @submit.prevent="submit">
         <input
           type="text"
-          v-model="username"
-          placeholder="Login"
+          v-model="userName"
+          placeholder="Name"
+          class="form-control"
+          @focus="error = ''"
+          required
+        />
+        <br />
+        <input
+          type="email"
+          v-model="userEmail"
+          placeholder="Email"
           class="form-control"
           @focus="error = ''"
           required
@@ -21,6 +30,15 @@
           required
         />
         <br />
+        <input
+          type="password"
+          v-model="passwordConfirmed"
+          placeholder="Confirm password"
+          class="form-control"
+          @focus="error = ''"
+          required
+        />
+        <br />
         <div class="text-center alert alert-danger" v-if="error.length > 0">
           {{ error }}
         </div>
@@ -30,12 +48,14 @@
           type="submit"
           class="btn btn-wide btn-primary login-btn"
         >
-          <span v-if="!loading"> Login </span>
+          <span v-if="!loading"> Register </span>
           <loading-component :visible="loading"></loading-component>
         </button>
 
         <div class="text-center mt-1">
-          <router-link to="/sign-up/" class="link">Sign up</router-link>
+          <router-link to="/auth/" class="link">
+            Already registered?
+          </router-link>
         </div>
       </form>
     </div>
@@ -45,42 +65,43 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 import authApi from "@/api/auth.api";
-import authService from "@/services/auth.service";
 import LoadingComponent from "@/containers/loading/loading.component.vue";
-import { IToken } from "@/models/account/token.interface";
 
 @Options({
-  components: { LoginPage, LoadingComponent },
+  components: { RegistrationPage, LoadingComponent },
 })
-export default class LoginPage extends Vue {
+export default class RegistrationPage extends Vue {
   public loading = false;
 
-  public username = "";
+  public userName = "";
+  public userEmail = "";
   public password = "";
+  public passwordConfirmed = "";
 
   public error = "";
 
-  public login() {
+  public register() {
     this.loading = true;
 
-    let username = this.username;
+    let userName = this.userName;
+    let userEmail = this.userEmail;
     let password = this.password;
+    let passwordConfirmed = this.passwordConfirmed;
 
     authApi
-      .login({
-        username,
+      .register({
+        userName,
+        userEmail,
         password,
+        passwordConfirmed,
       })
-      .then(async (res: IToken) => {
+      .then(async () => {
         this.loading = false;
         this.error = "";
 
-        await authService.storeToken(res.access_token);
-        await authService.storeTokenData();
-
         const returnUrl: string = this.$route.query.returnUrl
           ? (this.$route.query.returnUrl as string)
-          : "/catalog";
+          : "/auth/";
 
         await this.$router.push(returnUrl);
       })
@@ -91,7 +112,18 @@ export default class LoginPage extends Vue {
   }
 
   public submit() {
-    this.login();
+    if (this.validate()) {
+      this.register();
+    }
+  }
+
+  public validate(): boolean {
+    if (this.password !== this.passwordConfirmed) {
+      this.error = "Passwords do not match.";
+      return false;
+    }
+
+    return true;
   }
 }
 </script>

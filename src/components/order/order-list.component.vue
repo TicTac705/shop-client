@@ -41,6 +41,7 @@ import basketService from "@/services/basket.service";
 
 @Options({
   components: {
+    OrderListComponent,
     OrderItemComponent,
     HeaderComponent,
     LoadingComponent,

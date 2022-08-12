@@ -17,27 +17,41 @@
       ></catalog-row-item-component>
     </div>
   </div>
+
+  <pagination-component :paginate="paginate" @getList="getList">
+  </pagination-component>
 </template>
 
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 
 import { IProduct } from "@/models/product.interface";
-import { IPaging } from "@/models/paging.interface";
+import { IPaging, Paginate } from "@/models/paging.interface";
 
 import productApi from "@/api/product.api";
 import CatalogRowItemComponent from "@/components/catalog/catalog-row-item.component.vue";
 import HeaderComponent from "@/components/common/header.component.vue";
 import LoadingComponent from "@/containers/loading/loading.component.vue";
+import PaginationComponent from "@/components/pagination/pagination.component.vue";
 import { IProductDto, mapToProduct } from "@/dto/product.dto";
 import basketApi from "@/api/basket.api";
 import basketService from "@/services/basket.service";
 
 @Options({
-  components: { HeaderComponent, CatalogRowItemComponent, LoadingComponent },
+  components: {
+    HeaderComponent,
+    CatalogRowItemComponent,
+    LoadingComponent,
+    PaginationComponent,
+  },
 })
 export default class CatalogComponent extends Vue {
   public items: IProduct[] = [];
+  public paginate: Paginate = {
+    lastPage: 0,
+    currentPage: 0,
+    totalElements: 0,
+  };
 
   public loading = false;
 
@@ -45,8 +59,14 @@ export default class CatalogComponent extends Vue {
     this.load();
   }
 
-  list(): Promise<IPaging<IProductDto>> {
-    return productApi.getPage();
+  list(page = 1): Promise<IPaging<IProductDto>> {
+    return productApi.getPage(page);
+  }
+
+  async getList(pageNumber: number) {
+    const page = await this.list(pageNumber);
+    this.items = page.collection.map((p) => mapToProduct(p));
+    this.paginate = page.paginate;
   }
 
   public async load() {
@@ -59,6 +79,7 @@ export default class CatalogComponent extends Vue {
       await basketService.updateBasket();
       const page = await this.list();
       this.items = page.collection.map((p) => mapToProduct(p));
+      this.paginate = page.paginate;
     } finally {
       this.loading = false;
     }
@@ -71,7 +92,6 @@ export default class CatalogComponent extends Vue {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
 h3 {
   margin: 40px 0 0;
