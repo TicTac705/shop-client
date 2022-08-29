@@ -118,9 +118,9 @@ export default {
       .put(endpoint, body)
       .then((response: AxiosResponse) => response.data);
   },
-  delete<T>(endpoint: string): Promise<T> {
+  delete<T>(endpoint: string, body: any = null): Promise<T> {
     return instanse
-      .delete(endpoint)
+      .delete(endpoint, body)
       .then((response: AxiosResponse) => response.data);
   },
 };

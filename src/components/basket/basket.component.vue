@@ -10,8 +10,8 @@
   </div>
 
   <div class="container-fluid" v-if="!loading">
-    <div class="row" v-if="basketItems.length > 0">
-      <div class="col-9">
+    <div class="row justify-content-center" v-if="basketItems.length > 0">
+      <div class="col">
         <table class="table table-bordered table-hover">
           <thead>
             <tr>

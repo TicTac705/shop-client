@@ -1,8 +1,14 @@
 import { IProduct } from "@/models/product.interface";
 import { IIdName } from "@/models/id-name.interface";
-import { ICreateUpdate } from "@/models/create-update-delete.interface";
+import {
+  ICreateUpdate,
+  ICreateUpdateDelete,
+} from "@/models/create-update-delete.interface";
 
-export interface IProductDto extends IIdName, ICreateUpdate {
+export interface IProductDto
+  extends IIdName,
+    ICreateUpdate,
+    ICreateUpdateDelete {
   description: string;
   price: number;
   unitMeasure: IIdName;
@@ -27,5 +33,6 @@ export function mapToProduct(dto: IProductDto): IProduct {
     isActive: dto.isActive,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
+    deletedAt: dto.deletedAt,
   };
 }

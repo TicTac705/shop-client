@@ -11,4 +11,14 @@ export default {
   getPageForManagement(page = 1): Promise<IPaging<IProductDto>> {
     return http.get(`profile/catalog-management/products/?page=` + page);
   },
+
+  destroy(productId: string) {
+    return http.delete(`profile/catalog-management/products/` + productId);
+  },
+
+  destroyMany(productIds: string[]) {
+    return http.delete(`profile/catalog-management/products/`, {
+      params: { productIds: productIds },
+    });
+  },
 };

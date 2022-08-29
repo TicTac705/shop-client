@@ -6,7 +6,7 @@
           class="page-link"
           aria-label="Previous"
           :to="{
-            name: 'catalogPagination',
+            name: routeName,
             params: { number: paginate.currentPage - 1 },
           }"
         >
@@ -26,7 +26,7 @@
           class="page-link"
           aria-label="Next"
           :to="{
-            name: 'catalogPagination',
+            name: routeName,
             params: { number: paginate.currentPage + 1 },
           }"
         >
@@ -45,6 +45,7 @@ import { Prop } from "vue-property-decorator";
 export default class PaginationComponent extends Vue {
   @Prop() public paginate: Paginate;
   @Prop() public loading: boolean;
+  @Prop() public routeName: string;
 }
 </script>
 

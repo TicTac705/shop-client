@@ -1,8 +1,8 @@
 export interface ICreateUpdate {
   createdAt: number;
-  updatedAt: string;
+  updatedAt: number;
 }
 
 export interface ICreateUpdateDelete extends ICreateUpdate {
-  deletedAt: string;
+  deletedAt: number | null;
 }

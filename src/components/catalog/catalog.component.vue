@@ -19,6 +19,7 @@
   <pagination-component
     :paginate="paginate"
     :loading="loading"
+    :routeName="'catalogPagination'"
   ></pagination-component>
 </template>
 

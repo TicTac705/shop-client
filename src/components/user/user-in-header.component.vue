@@ -39,7 +39,9 @@
       <template v-if="isManager()">
         <li><hr class="dropdown-divider" /></li>
         <li>
-          <a class="dropdown-item" href="#">Product management</a>
+          <router-link class="dropdown-item" to="/management/catalog/">
+            Product management
+          </router-link>
         </li>
         <li>
           <a class="dropdown-item" href="#">Order management</a>

@@ -76,7 +76,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "catalog/page-:number/",
-        name: "catalogPagination",
+        name: "managementCatalogPagination",
         component: ManagementCatalogComponent,
       },
     ],
